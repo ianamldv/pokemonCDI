@@ -55,5 +55,4 @@ async function getPokemon(nameOrId) {
     }
 };
 
-
 getPokemon(nameOrId);
