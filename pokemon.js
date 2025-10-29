@@ -2,6 +2,28 @@ const axios = require('axios');
 const chalk = require('chalk');
 const ImageToAscii = require('image-to-ascii');
 
+
+const typeColors = {
+    normal: '#A8A77A',
+    fire: '#EE8130',
+    water: '#6390F0',
+    electric: '#F7D02C',
+    grass: '#7AC74C',
+    ice: '#96D9D6',
+    fighting: '#C22E28',
+    poison: '#A33EA1',
+    ground: '#E2BF65',
+    flying: '#A98FF3',
+    psychic: '#F95587',
+    bug: '#A6B91A',
+    rock: '#B6A136',
+    ghost: '#735797',
+    dragon: '#6F35FC',
+    dark: '#705746',
+    steel: '#B7B7CE',
+    fairy: '#D685AD'
+};
+
 const args = process.argv.slice(2);
 let input = args[0];
 
@@ -58,20 +80,22 @@ async function printPokemon(pokemon) {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
 
     ImageToAscii(spriteUrl, { size: { width: 20 }, colored: true }, (err, converted) => {
-        if (err) {
-            console.error("Error converting image:", err);
-            return;
-        }
-        console.log(converted);
+            if (err) {
+                console.error("Error converting image:", err);
+                return reject(err);
+            }
 
         console.log(`\n🔍 Searching for: ${pokemon.name}\n`);
         console.log(top);
         console.log(middle);
         console.log(bottom);
 
+        console.log(converted);
+
+
         console.log(`\n📏 Height: ${pokemon.height}m`);
         console.log(`⚖️  Weight: ${pokemon.weight}kg`);
-        console.log(`⚡ Type: ${pokemon.types.join(', ')}`);
+        console.log(`⚡ Type: ${printColoredTypes(pokemon.types)}`);
 
         console.log("\n📊 Base stats: ");
         console.log(`❤️  HP: ${pokemon.stats.hp}`);
@@ -80,8 +104,6 @@ async function printPokemon(pokemon) {
         console.log(`💨 Speed: ${pokemon.stats.speed}`);
     });
 }
-
-
 
 async function compare() {
     const poke1 = await fetchPokemonData(args[1]);
@@ -122,6 +144,14 @@ async function compare() {
 };
 
 
+function printColoredTypes(typesArray) {
+    return typesArray.map(type => {
+        const key = type.toLowerCase();
+        const color = typeColors[key] || '#FFFFFF';
+        return chalk.hex(color)(type.toUpperCase());
+    }).join(' | ');
+}
+
 
 async function run() {
     if (input === "random") {
@@ -155,3 +185,4 @@ async function run() {
 
 
 run();
+
