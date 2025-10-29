@@ -2,6 +2,8 @@ const axios = require('axios');
 const chalk = require('chalk');
 const ImageToAscii = require('image-to-ascii');
 
+const args = process.argv.slice(2);
+let input = args[0];
 
 const typeColors = {
     normal: '#A8A77A',
@@ -24,23 +26,16 @@ const typeColors = {
     fairy: '#D685AD'
 };
 
-const args = process.argv.slice(2);
-let input = args[0];
-
-
 if (!input) {
     console.log("Provide a Pokemon name or id!");
     console.log(`Example: 
-        node pokemon.js 25 
-        or
-        node pokemon.js pikachu
+        node pokemon.js 25/node pokemon.js pikachu -> to get info and drawing of a pokemon by nasme or code
         node pokemon.js random -> for a random pokemon form gen1
         node pokemon.js list 1 5 -> for all the pokemons in that range
-
+        node pokemon.js compare pikachu bulbasaur -> for comparing two pokemons
         `);
     process.exit();
 }
-
 
 async function fetchPokemonData(nameOrId) {
     try {
@@ -80,10 +75,10 @@ async function printPokemon(pokemon) {
     const spriteUrl = `https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/${pokemon.id}.png`;
 
     ImageToAscii(spriteUrl, { size: { width: 20 }, colored: true }, (err, converted) => {
-            if (err) {
-                console.error("Error converting image:", err);
-                return reject(err);
-            }
+        if (err) {
+            console.error("Error converting image:", err);
+            return reject(err);
+        }
 
         console.log(`\n🔍 Searching for: ${pokemon.name}\n`);
         console.log(top);
@@ -91,7 +86,6 @@ async function printPokemon(pokemon) {
         console.log(bottom);
 
         console.log(converted);
-
 
         console.log(`\n📏 Height: ${pokemon.height}m`);
         console.log(`⚖️  Weight: ${pokemon.weight}kg`);
@@ -110,7 +104,6 @@ async function compare() {
     const poke2 = await fetchPokemonData(args[2]);
 
     if (!poke1 || !poke2) return;
-
 
     console.log("POKEMON COMPARASSION");
     console.log(`\n${poke1.name} vs ${poke2.name}`);
@@ -143,7 +136,6 @@ async function compare() {
     }
 };
 
-
 function printColoredTypes(typesArray) {
     return typesArray.map(type => {
         const key = type.toLowerCase();
@@ -151,7 +143,6 @@ function printColoredTypes(typesArray) {
         return chalk.hex(color)(type.toUpperCase());
     }).join(' | ');
 }
-
 
 async function run() {
     if (input === "random") {
@@ -182,7 +173,6 @@ async function run() {
   const pokemon = await fetchPokemonData(input);
   if (pokemon) printPokemon(pokemon);
 }};
-
 
 run();
 
