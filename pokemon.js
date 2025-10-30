@@ -26,6 +26,7 @@ const typeColors = {
     fairy: '#D685AD'
 };
 
+//explains the logic of the program when no input is provided
 if (!input) {
     console.log("Provide a Pokemon name or id!");
     console.log(`Example: 
@@ -37,6 +38,7 @@ if (!input) {
     process.exit();
 }
 
+//this function fetches all the needed data from API
 async function fetchPokemonData(nameOrId) {
     try {
         const response = await axios.get(`https://pokeapi.co/api/v2/pokemon/${nameOrId}`);
@@ -65,6 +67,7 @@ async function fetchPokemonData(nameOrId) {
     }
 };
 
+//this function prints information about a singlr pokemon + prints an ascii coloured image
 async function printPokemon(pokemon) {
     const nameId = `${pokemon.name.toUpperCase()} (#${pokemon.id})`;
     const width = nameId.length + 4;
@@ -99,6 +102,7 @@ async function printPokemon(pokemon) {
     });
 }
 
+//this function compares 2 pokemons and rates which one is stronger
 async function compare() {
     const poke1 = await fetchPokemonData(args[1]);
     const poke2 = await fetchPokemonData(args[2]);
@@ -136,6 +140,7 @@ async function compare() {
     }
 };
 
+//this prints the colour of the pokemons based on their type
 function printColoredTypes(typesArray) {
     return typesArray.map(type => {
         const key = type.toLowerCase();
@@ -144,6 +149,7 @@ function printColoredTypes(typesArray) {
     }).join(' | ');
 }
 
+//this is the function that manages the inputs
 async function run() {
     if (input === "random") {
     let nameOrId = Math.floor(Math.random() * 151) + 1;
